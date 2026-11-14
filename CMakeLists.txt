@@ -3,15 +3,23 @@ project("ForthInterpreter")
 
 set( SRC_FILES
     "src/interpreter.cpp"
-    "src/word_impl.cpp"
-    "src/utils.cpp"
-    "src/memory.cpp"
+    "src/ft_word_impl.cpp"
+    "src/ft_word.cpp"
+    "src/ft_memory.cpp"
+    "src/ft_stack.cpp"
+    "src/ft_state.cpp"
+    "src/ft_utils.cpp"
+    "src/ft_output_buffer.cpp"
 )
 
 set( HEADER_FILES
     "include/interpreter.hpp"
-    "include/execution_token.hpp"
-    "include/memory.hpp"
+    "include/ft_word.hpp"
+    "include/ft_memory.hpp"
+    "include/ft_stack.hpp"
+    "include/ft_state.hpp"
+    "include/ft_utils.hpp"
+    "include/ft_output_buffer.hpp"
     "include/error_codes.hpp"
 )
 
