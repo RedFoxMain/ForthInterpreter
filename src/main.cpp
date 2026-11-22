@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../include/interpreter.hpp"
+#include "../include/ft_interpreter.hpp"
 
 int main() {
     Interpreter interpreter;
