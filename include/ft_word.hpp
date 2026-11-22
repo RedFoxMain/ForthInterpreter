@@ -8,21 +8,19 @@
 #include <functional>
 #include <numeric>
 
-#include "error_codes.hpp"
+#include "ft_error_codes.hpp"
 #include "ft_memory.hpp"
 #include "ft_stack.hpp"
 #include "ft_state.hpp"
 #include "ft_utils.hpp"
 #include "ft_output_buffer.hpp"
-
-using Func = std::function<FtError()>;
-using ImmediateFunc = std::function<FtError(std::istringstream&)>;
+#include "ft_control_flow.hpp"
 
 struct FtWord {
     bool is_immediate;
     bool is_hidden;
     std::string name{};
-    std::vector<Func> data{};
+    std::vector<FuncWithIp> data{};
     Func code = nullptr;
     ImmediateFunc immediate = nullptr;
 
@@ -44,6 +42,10 @@ public:
     void deleteLastDefinition();
     void compileNewWord(const std::string& name, Func func, bool is_immediate = false);
     void compileNewWord(const std::string& name, ImmediateFunc imm_func, bool is_immediate = true);
+    void compileNewWordBody(FtWord* word);
+    void compileNewWordBody(FuncWithIp func);
+    void compileLiteral(cell value);
+    void setLastDefinition(int index);
     int findWord(const std::string& word);
     FtError evaluate(const std::string& code);
     FtWord* getWordAt(int index);
@@ -63,6 +65,15 @@ public:
     FtError forth_over();
 
     FtError forth_if(std::istringstream& stream);
+    FtError forth_else(std::istringstream& stream);
+    FtError forth_then(std::istringstream& stream);
+
+    FtError forth_do(std::istringstream& stream);
+    FtError forth_loop(std::istringstream& stream);
+    FtError forth_begin(std::istringstream& stream);
+    FtError forth_until(std::istringstream& stream);
+    FtError forth_while(std::istringstream& stream);
+    FtError forth_repeat(std::istringstream& stream);
 
     FtError forth_plus();
     FtError forth_minus();
@@ -98,6 +109,8 @@ private:
     FtMemory memory_;
     int last_definition_at_;
     FtOutputBuffer output_buffer_;
+    std::vector<FtCtrlFlow> ctrl_flow_;
+    std::vector<FtLoopFrame> loop_frames_;
     std::vector<std::unique_ptr<FtWord>> words_;
 };
 
