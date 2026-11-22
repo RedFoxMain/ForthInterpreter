@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <memory>
-#include "error_codes.hpp"
+#include "ft_error_codes.hpp"
 
 class FtMemory {
 public:
