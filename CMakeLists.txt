@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.25)
 project("ForthInterpreter")
 
 set( SRC_FILES
-    "src/interpreter.cpp"
+    "src/ft_interpreter.cpp"
     "src/ft_word_impl.cpp"
     "src/ft_word.cpp"
     "src/ft_memory.cpp"
@@ -13,14 +13,15 @@ set( SRC_FILES
 )
 
 set( HEADER_FILES
-    "include/interpreter.hpp"
+    "include/ft_interpreter.hpp"
     "include/ft_word.hpp"
     "include/ft_memory.hpp"
     "include/ft_stack.hpp"
     "include/ft_state.hpp"
     "include/ft_utils.hpp"
     "include/ft_output_buffer.hpp"
-    "include/error_codes.hpp"
+    "include/ft_control_flow.hpp"
+    "include/ft_error_codes.hpp"
 )
 
 add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC_FILES} ${HEADER_FILES})
