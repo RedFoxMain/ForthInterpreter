@@ -3,23 +3,20 @@
 
 #include <sstream>
 
-enum FtPrintState { Ordinary, WithSpace, NewLine };
-
 class FtOutputBuffer {
 public:
-    FtOutputBuffer() = default;
+    FtOutputBuffer()
+        : is_buffer_empty_(true) {}
     ~FtOutputBuffer() = default;
 
-    void writeStringToBuffer(const std::string& str, FtPrintState state = FtPrintState::Ordinary);
-    void writeCharToBuffer(char ch, FtPrintState state = FtPrintState::Ordinary);
-    void writeNumberToBuffer(long long number, FtPrintState state = FtPrintState::Ordinary);
+    void writeStringToBuffer(const std::string& str);
+    void writeCharToBuffer(char symbol);
+    void writeNumberToBuffer(long long value);
     void writeNewLineToBuffer();
     const std::string take(); 
 
 private:
-    const std::string checkState(FtPrintState state) const;
-
-private:
+    bool is_buffer_empty_;
     std::ostringstream stream_;
 };
 
