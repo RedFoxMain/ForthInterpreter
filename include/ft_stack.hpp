@@ -2,7 +2,7 @@
 #define _FORTH_STACK_HPP_
 
 #include <stack>
-#include "error_codes.hpp"
+#include "ft_error_codes.hpp"
 
 class FtStack {
 public:
