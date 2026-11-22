@@ -4,7 +4,7 @@
 #include <string>
 #include <sstream>
 #include "ft_word.hpp"
-#include "error_codes.hpp"
+#include "ft_error_codes.hpp"
 
 class FtUtils {
 public:
@@ -14,7 +14,7 @@ public:
     static std::string getStringFromQuotes(std::istringstream& stream);
     static FtError getNumber(const std::string& word, cell& value);
     static std::string getError(FtError error);
-    static bool isDigit(const std::string& word);
+    static bool isNumber(const std::string& word);
 };
 
 #endif // !_FORTH_UTILS_HPP_

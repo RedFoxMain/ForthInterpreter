@@ -26,30 +26,38 @@ FtError FtUtils::getNumber(const std::string& word, cell& value) {
         std::size_t pos{};
         cell number = std::stoll(word, &pos);
         if (pos != word.size()) 
-            return FtError{ ErrorCode::BadNumber, word };
+            return FtError{ FtErrorCode::BadNumber, word };
         value = number;
-    } catch(std::invalid_argument&) { return FtError{ ErrorCode::UnknownWord, word }; }
-    return FtError{ ErrorCode::Ok };
+    } catch(std::invalid_argument&) { return FtError{ FtErrorCode::UnknownWord, word }; }
+    return FtError{ FtErrorCode::Ok };
 }
 
-bool FtUtils::isDigit(const std::string& word) {
+bool FtUtils::isNumber(const std::string& word) {
     return std::all_of(word.begin(), word.end(), ::isdigit);
 }
 
 std::string FtUtils::getError(FtError error) {
     switch (error.error_code) {
-        case ErrorCode::Ok: return "ok"; 
-        case ErrorCode::BadNumber: return "bad number format: " + error.descr; 
-        case ErrorCode::UnknownWord: return "unknown word: " + error.descr; 
-        case ErrorCode::DivisionByZero: return "division by zero"; 
-        case ErrorCode::EmptyStack: return "the stack is empty"; 
-        case ErrorCode::StackOutOfMemory: return "stack out of memory"; 
-        case ErrorCode::ParametersExpected: return "expected more parameters";  
-        case ErrorCode::WordNameNotSet: return "word name not set";
-        case ErrorCode::AlreadyInCompilingMode: return "already in compiling mode";
-        case ErrorCode::NotInCompilingMode: return "not in compiling mode";
-        case ErrorCode::MemoryOverflow: return "memory is overflow";
-        case ErrorCode::BadAddress: return "bad memory address: " + error.descr;
+        case FtErrorCode::Ok: return "ok"; 
+        case FtErrorCode::BadNumber: return "bad number format: " + error.descr; 
+        case FtErrorCode::UnknownWord: return "unknown word: " + error.descr; 
+        case FtErrorCode::DivisionByZero: return "division by zero"; 
+        case FtErrorCode::EmptyStack: return "the stack is empty"; 
+        case FtErrorCode::StackOutOfMemory: return "stack out of memory"; 
+        case FtErrorCode::WordNameNotSet: return "empty string for word name";
+        case FtErrorCode::AlreadyInCompilingMode: return "already in compiling mode";
+        case FtErrorCode::NotInCompilingMode: return "not in compiling mode";
+        case FtErrorCode::MemoryOverflow: return "memory is overflow";
+        case FtErrorCode::BadAddress: return "bad memory address: " + error.descr;
+        case FtErrorCode::UnterminatedIf: return "unterminated if";
+        case FtErrorCode::UnterminatedLoop: return "unterminated loop";
+        case FtErrorCode::UnexpectedThen: return "unexpected \"then\"";
+        case FtErrorCode::UnexpectedWhile: return "unexpected \"while\"";
+        case FtErrorCode::UnexpectedRepeat: return "unexpected \"repeat\"";
+        case FtErrorCode::UnexpectedUntil: return "unexpected \"until\"";
+        case FtErrorCode::UnexpectedLoop: return "unexpected \"loop\"";
+        case FtErrorCode::WordNotSupportedInCompileMode: return "word not supported in compile mode";
+        case FtErrorCode::NotImplemented: return "word not implemented";
         default: return "undefined error";
     }
 }
