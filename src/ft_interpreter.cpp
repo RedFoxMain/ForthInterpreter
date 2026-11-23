@@ -58,10 +58,10 @@ FtError FtInterpreter::evaluate(const std::string& code) {
 void FtInterpreter::initDictionary() {
     // Built-in variables
     dictionary_.addWord("I", [this]() -> FtError { 
-        if (compile_ctx_.loop_frames.empty()) 
+        if (runtime_ctx_.loop_frames.empty()) 
             return FtError{ FtErrorCode::EmptyStack };
-        return runtime_ctx_.stack.pushv(compile_ctx_.loop_frames.back().index);
-    } );
+        return runtime_ctx_.stack.pushv(runtime_ctx_.loop_frames.back().index);
+    }, false, true);
 
     // Stack methods
     dictionary_.addWord("drop", [this]() -> FtError { return forth_drop(); } );
@@ -119,6 +119,7 @@ void FtInterpreter::createEmptyWord() {
 }
 
 void FtInterpreter::abortCompile() {
+    if (compile_ctx_.last_definition_at == -1) return;
     if (compile_ctx_.last_definition_at == dictionary_.size() - 1) dictionary_.pop();
     else dictionary_.erase(compile_ctx_.last_definition_at);
     runtime_ctx_.reset();
