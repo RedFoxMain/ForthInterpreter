@@ -8,7 +8,8 @@ public:
     FtOutputBuffer()
         : is_buffer_empty_(true) {}
     ~FtOutputBuffer() = default;
-
+    
+    void reset();
     void writeStringToBuffer(const std::string& str);
     void writeCharToBuffer(char symbol);
     void writeNumberToBuffer(long long value);

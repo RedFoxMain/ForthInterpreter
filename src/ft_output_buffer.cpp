@@ -1,5 +1,11 @@
 #include "../include/ft_output_buffer.hpp"
 
+void FtOutputBuffer::reset() {
+    stream_.str("");
+    stream_.clear();
+    is_buffer_empty_ = true;
+}
+
 void FtOutputBuffer::writeStringToBuffer(const std::string& str) {
     if (str.empty()) return;
     stream_ << (!is_buffer_empty_ ? " " : "") << str; 
@@ -19,8 +25,6 @@ void FtOutputBuffer::writeNumberToBuffer(long long value) {
 void FtOutputBuffer::writeNewLineToBuffer() { stream_ << "\n"; is_buffer_empty_ = true; }
 const std::string FtOutputBuffer::take() { 
     auto temp = stream_.str(); 
-    stream_.str(""); 
-    stream_.clear(); 
-    is_buffer_empty_ = true;
+    reset();
     return temp; 
 }
