@@ -5,6 +5,9 @@
 #include <vector>
 #include <cstddef>
 #include <unordered_map>
+#include <functional>
+#include <sstream>
+#include "ft_error_codes.hpp"
 
 using Func = std::function<FtError()>;
 using FuncWithIp = std::function<FtError(std::size_t&)>;
@@ -12,17 +15,18 @@ using ImmediateFunc = std::function<FtError(std::istringstream&)>;
 
 struct FtLoopFrame {
     std::size_t index, limit;
-    std::unordered_map<std::string, FuncWithIp> local_varibales;
+    std::unordered_map<std::string, FuncWithIp> local_variables;
     explicit FtLoopFrame(std::size_t index, std::size_t limit)
         : index(index), limit(limit) {}
 };
 
 struct FtCtrlFlow {
     enum Kind { 
-        IfKind = 0, ElseKind = 1, DoKind = 2, LoopKind = 3, 
-        BeginKind = 4, UntilKind = 5, WhileKind = 6, RepeatKind = 7
+        If = 0, Else = 1, Do = 2, Loop = 3, 
+        Begin = 4, Until = 5, While = 6, Repeat = 7
     } kind;
     std::size_t position;
+    std::vector<std::size_t> leave_positions;
     explicit FtCtrlFlow(Kind kind, std::size_t position)
         : kind(kind), position(position) {}
 };
