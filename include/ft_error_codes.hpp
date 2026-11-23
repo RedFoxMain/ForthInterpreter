@@ -21,6 +21,7 @@ using cell = long long;
 enum FtErrorCode { 
     Ok = 0, 
     BadNumber, 
+    NumberTooBig,
     UnknownWord,
     DivisionByZero,
     EmptyStack,
@@ -39,7 +40,8 @@ enum FtErrorCode {
     UnexpectedUntil,
     UnexpectedLoop,
     WordNotSupportedInCompileMode,
-    NotImplemented
+    NotImplemented,
+    CannotRedefineBuiltinWord
 };
 
 struct FtError {

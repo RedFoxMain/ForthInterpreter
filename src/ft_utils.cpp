@@ -29,6 +29,7 @@ FtError FtUtils::getNumber(const std::string& word, cell& value) {
             return FtError{ FtErrorCode::BadNumber, word };
         value = number;
     } catch(std::invalid_argument&) { return FtError{ FtErrorCode::UnknownWord, word }; }
+    catch(std::out_of_range&) { return FtError{ FtErrorCode::NumberTooBig, word }; }
     return FtError{ FtErrorCode::Ok };
 }
 
@@ -40,6 +41,7 @@ std::string FtUtils::getError(FtError error) {
     switch (error.error_code) {
         case FtErrorCode::Ok: return "ok"; 
         case FtErrorCode::BadNumber: return "bad number format: " + error.descr; 
+        case FtErrorCode::NumberTooBig: return "number too big: " + error.descr;
         case FtErrorCode::UnknownWord: return "unknown word: " + error.descr; 
         case FtErrorCode::DivisionByZero: return "division by zero"; 
         case FtErrorCode::EmptyStack: return "the stack is empty"; 
@@ -59,6 +61,7 @@ std::string FtUtils::getError(FtError error) {
         case FtErrorCode::UnexpectedLoop: return "unexpected \"loop\"";
         case FtErrorCode::WordNotSupportedInCompileMode: return "word not supported in compile mode";
         case FtErrorCode::NotImplemented: return "word not implemented";
+        case FtErrorCode::CannotRedefineBuiltinWord: return "cannot redefine built-in word: " + error.descr;
         default: return "undefined error";
     }
 }
