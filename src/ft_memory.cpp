@@ -1,7 +1,6 @@
 #include "../include/ft_memory.hpp"
 
 FtError FtMemory::allot(std::size_t bytes) {
-    if (bytes < 0) return FtError{ FtErrorCode::BadAddress };
     if (bytes > MEMORY_SIZE - memory_ptr_)
         return FtError{ FtErrorCode::MemoryOverflow };
     memory_ptr_ += bytes;
