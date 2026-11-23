@@ -3,6 +3,7 @@
 void FtWordDictionary::createEmptyWord() {
     words_.emplace_back(std::make_unique<FtWord>());
     words_.back()->is_hidden = true;
+    words_.back()->is_immediate = false;
 }
 
 void FtWordDictionary::pop() {
@@ -13,12 +14,12 @@ void FtWordDictionary::erase(std::size_t index) {
     words_.erase(words_.begin() + index, words_.end());
 }
 
-void FtWordDictionary::addWord(const std::string& name, Func func, bool is_immediate) {
-    words_.emplace_back(std::make_unique<FtWord>(name, func, is_immediate));
+void FtWordDictionary::addWord(const std::string& name, Func func, bool is_immediate, bool is_builtin) {
+    words_.emplace_back(std::make_unique<FtWord>(name, func, is_immediate, false, is_builtin));
 }
 
-void FtWordDictionary::addWord(const std::string& name, ImmediateFunc imm_func, bool is_immediate) {
-    words_.emplace_back(std::make_unique<FtWord>(name, imm_func, is_immediate));
+void FtWordDictionary::addWord(const std::string& name, ImmediateFunc imm_func, bool is_immediate, bool is_builtin) {
+    words_.emplace_back(std::make_unique<FtWord>(name, imm_func, is_immediate, false, is_builtin));
 }
 
 void FtWordDictionary::compileCall(const FtCompileContext& ctx, FtWord* word) {
