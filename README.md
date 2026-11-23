@@ -27,14 +27,8 @@ On Windows, Visual Studio or the Visual Studio Build Tools must provide a C++ co
 From the project root:
 
 ```powershell
-cmake --preset DebugX64
-cmake --build out/build/DebugX64
-```
-
-The executable is generated at:
-
-```text
-out/build/DebugX64/ForthInterpreter.exe
+cmake -S . -B build
+cmake --build build --config Debug
 ```
 
 You can also open the repository in an IDE that supports CMake and build the `ForthInterpreter` target.
@@ -42,7 +36,7 @@ You can also open the repository in an IDE that supports CMake and build the `Fo
 ## Run
 
 ```powershell
-.\out\build\DebugX64\ForthInterpreter.exe
+.\build\ForthInterpreter.exe
 ```
 
 The interpreter prints `>> ` for each input line. Enter `bye` to exit.
