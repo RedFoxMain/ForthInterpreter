@@ -171,17 +171,6 @@ The interpreter provides a 4 KiB byte memory area and 64-bit integer cells.
 
 ## Architecture
 
-The project is organized as follows:
-
-```text
-include/
-  Public headers for the interpreter, dictionary, runtime state,
-  stack, memory, output, control flow, and error handling
-src/
-  Implementation of the REPL, words, dictionary, stack,
-  memory, utilities, and runtime context
-```
-
 Key components:
 
 - `FtInterpreter`: initializes the dictionary and evaluates REPL input
