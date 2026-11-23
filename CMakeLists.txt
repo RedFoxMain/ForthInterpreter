@@ -10,6 +10,7 @@ set( SRC_FILES
     "src/ft_utils.cpp"
     "src/ft_output_buffer.cpp"
     "src/ft_runtime_context.cpp"
+    "src/ft_compile_context.cpp"
 )
 
 set( HEADER_FILES
