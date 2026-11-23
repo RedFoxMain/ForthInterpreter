@@ -19,7 +19,8 @@ public:
     FtStack stack;
     FtMemory memory;
     FtOutputBuffer output_buffer;
-    std::vector<FtCtrlFlow> ctrl_flow;
+    std::vector<FtLoopFrame> loop_frames;
+    
 };
 
 #endif // !_FORTH_RUNTIME_CONTEXT_HPP_
