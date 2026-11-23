@@ -16,8 +16,7 @@ public:
     FtError pop2v(cell& val1, cell& val2);
     FtError pop3v(cell& val1, cell& val2, cell& val3);
 
-    bool isStackFull() const;
-    bool isStackEmpty() const;
+    bool isFull();
 
 private:
     std::stack<cell> stack_;

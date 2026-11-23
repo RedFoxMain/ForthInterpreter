@@ -7,7 +7,7 @@ FtError FtStack::topv(cell& value) {
 }
 
 FtError FtStack::pushv(cell value) {
-    if (isStackFull()) return FtError{ FtErrorCode::StackOutOfMemory };
+    if (isFull()) return FtError{ FtErrorCode::StackOutOfMemory };
     stack_.push(value);
     return FtError{ FtErrorCode::Ok };
 }
@@ -36,5 +36,4 @@ FtError FtStack::pop3v(cell& val1, cell& val2, cell& val3) {
     return FtError{ FtErrorCode::Ok };
 }
 
-bool FtStack::isStackFull() const { return stack_.size() >= STACK_SIZE; }
-bool FtStack::isStackEmpty() const { return stack_.empty(); }
+bool FtStack::isFull() { return stack_.size() >= STACK_SIZE; }
