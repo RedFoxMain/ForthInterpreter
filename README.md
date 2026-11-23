@@ -151,17 +151,31 @@ The interpreter provides a 4 KiB byte memory area and 64-bit integer cells.
 | Word | Description |
 |---|---|
 | `here` | Push the next free memory address |
-| `cell` | Convert a cell count to a byte count |
+| `allot` | Reserve the specified number of bytes at the current address; stack effect `( bytes -- )` |
+| `variable` | Create a named variable and reserve one cell for it |
+| `cells` | Convert a cell count to a byte count |
 | `cell+` | Add the size of one cell to an address |
 | `@` | Fetch a cell from an address |
 | `!` | Store a cell at an address |
 
+Interpreter reserve 16 bytes and display the new address:
 ```text
-0 42 ! 0 @ .
+>> here 16 allot here .
+16 ok
+```
+
+`variable` creates a named word that pushes its memory address. Store and fetch values through that address:
+
+```text
+>> variable counter
+ok
+>> 42 counter !
+ok
+>> counter @ .
 42 ok
 ```
 
-`@` and `!` require valid operations within the 4 KiB memory area. Memory access outside the valid address range is rejected.
+`@` and `!` require a complete cell to fit within the 4 KiB memory area. Memory access outside the valid address range is rejected.
 
 ## Architecture
 
