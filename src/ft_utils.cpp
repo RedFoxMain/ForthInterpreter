@@ -47,6 +47,7 @@ std::string FtUtils::getError(FtError error) {
         case FtErrorCode::WordNameNotSet: return "empty string for word name";
         case FtErrorCode::AlreadyInCompilingMode: return "already in compiling mode";
         case FtErrorCode::NotInCompilingMode: return "not in compiling mode";
+        case FtErrorCode::NotInLoop: return "not in loop";
         case FtErrorCode::MemoryOverflow: return "memory is overflow";
         case FtErrorCode::BadAddress: return "bad memory address: " + error.descr;
         case FtErrorCode::UnterminatedIf: return "unterminated if";

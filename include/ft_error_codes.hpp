@@ -28,6 +28,7 @@ enum FtErrorCode {
     WordNameNotSet,
     AlreadyInCompilingMode,
     NotInCompilingMode,
+    NotInLoop,
     MemoryOverflow,
     BadAddress,
     UnterminatedIf,
