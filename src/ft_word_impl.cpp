@@ -274,10 +274,15 @@ FtError FtInterpreter::forth_variable(std::istringstream& stream) {
         return FtError{ FtErrorCode::WordNameNotSet };
     std::size_t address = runtime_ctx_.memory.here();
     RETURN_IF_ERROR(runtime_ctx_.memory.reserveMemory(sizeof(cell)));
-    dictionary_.compileCall(compile_ctx_, [this, address](std::size_t&) -> FtError {
+    dictionary_.addWord(buffer, [this, address]() -> FtError {
         return runtime_ctx_.stack.pushv(address);
     } );
     return FtError{ FtErrorCode::Ok };
+}
+
+FtError FtInterpreter::forth_allot() {
+    cell n = 0; RETURN_IF_ERROR(runtime_ctx_.stack.popv(n));
+    return runtime_ctx_.memory.allot(n);
 }
 
 FtError FtInterpreter::forth_here() {
@@ -285,7 +290,7 @@ FtError FtInterpreter::forth_here() {
     return runtime_ctx_.stack.pushv(runtime_ctx_.memory.here());
 }
 
-FtError FtInterpreter::forth_cell() {
+FtError FtInterpreter::forth_cells() {
     cell n = 0; RETURN_IF_ERROR(runtime_ctx_.stack.popv(n));
     return runtime_ctx_.stack.pushv(n * sizeof(cell)); 
 }

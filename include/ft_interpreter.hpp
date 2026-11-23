@@ -56,8 +56,9 @@ private:
     FtError forth_cr();
 
     FtError forth_variable(std::istringstream& stream);
+    FtError forth_allot();
     FtError forth_here();
-    FtError forth_cell();
+    FtError forth_cells();
     FtError forth_cell_plus();
     FtError forth_fetch();
     FtError forth_store();

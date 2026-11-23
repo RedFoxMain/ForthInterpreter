@@ -102,9 +102,9 @@ void FtInterpreter::initDictionary() {
     dictionary_.addWord(".\"", [this](std::istringstream& stream) -> FtError { return forth_dotquote(stream); } );
     
     dictionary_.addWord("variable", [this](std::istringstream& stream) -> FtError { return forth_variable(stream); } );
-    // dictionary_.addWord("allot", [this]() -> FtError { RETURN_IF_ERROR(memory_.allot()); return FtErrorCode::Ok; } );
+    dictionary_.addWord("allot", [this]() -> FtError { return forth_allot(); } );
     dictionary_.addWord("here", [this]() -> FtError { return forth_here(); } );  
-    dictionary_.addWord("cell", [this]() -> FtError { return forth_cell(); } );
+    dictionary_.addWord("cells", [this]() -> FtError { return forth_cells(); } );
     dictionary_.addWord("cell+", [this]() -> FtError { return forth_cell_plus(); } );
     dictionary_.addWord("@", [this]() -> FtError { return forth_fetch(); } );
     dictionary_.addWord("!", [this]() -> FtError { return forth_store(); } );
