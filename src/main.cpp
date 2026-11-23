@@ -2,7 +2,7 @@
 #include "../include/ft_interpreter.hpp"
 
 int main() {
-    Interpreter interpreter;
+    FtInterpreter interpreter;
     interpreter.run();
     return EXIT_SUCCESS;
 }
