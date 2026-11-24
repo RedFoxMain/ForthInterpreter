@@ -10,7 +10,7 @@ A C++17 implementation of an interactive, stack-based Forth interpreter. It incl
 - Built-in stack-manipulation words
 - Arithmetic, comparisons, and bitwise operations
 - Basic memory reservation and direct memory access
-- Control flow for `IF`, `DO LOOP`, `BEGIN UNTIL`, and `BEGIN WHILE REPEAT`
+- Control flow for `if`, `do loop`, `begin until`, and `begin while repeat`
 - Dictionary-based execution and compilation
 - Clear interpreter error messages
 
@@ -38,16 +38,16 @@ You can also open the repository in an IDE that supports CMake and build the `Fo
 Tests are controlled by CMake's `BUILD_TESTING` option. It defaults to `ON`, which adds the `ForthInterpreterTests` target and registers it with CTest.
 
 ```powershell
-cmake --preset DebugX64 -DBUILD_TESTING=ON
-cmake --build out/build/DebugX64 --target ForthInterpreterTests
-ctest --test-dir out/build/DebugX64 --output-on-failure
+cmake -S . -B build-tests -DBUILD_TESTING=ON
+cmake --build build-tests --config Debug --target ForthInterpreterTests
+ctest --test-dir build-tests -C Debug --output-on-failure
 ```
 
 To disable test compilation and registration, reconfigure with `BUILD_TESTING=OFF`:
 
 ```powershell
-cmake --preset DebugX64 -DBUILD_TESTING=OFF
-cmake --build out/build/DebugX64
+cmake -S . -B build -DBUILD_TESTING=OFF
+cmake --build build --config Debug
 ```
 
 ## Run
