@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 project("ForthInterpreter")
 
-set( SRC_FILES
+set(SRC_FILES
     "src/ft_interpreter.cpp"
     "src/ft_word_impl.cpp"
     "src/ft_memory.cpp"
@@ -13,7 +13,7 @@ set( SRC_FILES
     "src/ft_word_dictionary.cpp"
 )
 
-set( HEADER_FILES
+set(HEADER_FILES
     "include/ft_interpreter.hpp"
     "include/ft_word.hpp"
     "include/ft_memory.hpp"
@@ -28,5 +28,22 @@ set( HEADER_FILES
 )
 
 add_executable(${PROJECT_NAME} "src/main.cpp" ${SRC_FILES} ${HEADER_FILES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${HEADER_FILES})
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+
+include(CTest)
+
+if(BUILD_TESTING)
+    add_executable(ForthInterpreterTests
+        "tests/test.cpp"
+        ${SRC_FILES}
+        ${HEADER_FILES}
+    )
+    target_include_directories(ForthInterpreterTests PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests"
+    )
+    target_compile_features(ForthInterpreterTests PRIVATE cxx_std_17)
+
+    add_test(NAME ForthInterpreterTests COMMAND ForthInterpreterTests)
+endif()
