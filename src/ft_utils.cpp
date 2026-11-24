@@ -1,15 +1,6 @@
 #include <algorithm>
 #include "../include/ft_utils.hpp"
 
-std::string FtUtils::joinVec(const std::vector<std::string>& vec) {
-    std::string buffer{};
-    for(auto it = vec.begin(); it != vec.end(); ++it) {
-        if (it != vec.begin()) buffer += ' ';
-        buffer += *it;
-    }
-    return buffer;
-}
-
 std::string FtUtils::getStringFromQuotes(std::istringstream& stream) {
     if (stream.peek() == ' ') stream.ignore(1);
     char chr;
@@ -28,13 +19,12 @@ FtError FtUtils::getNumber(const std::string& word, cell& value) {
         if (pos != word.size()) 
             return FtError{ FtErrorCode::BadNumber, word };
         value = number;
-    } catch(std::invalid_argument&) { return FtError{ FtErrorCode::UnknownWord, word }; }
-    catch(std::out_of_range&) { return FtError{ FtErrorCode::NumberTooBig, word }; }
+    } catch(std::out_of_range&) { return FtError{ FtErrorCode::NumberTooBig, word }; }
     return FtError{ FtErrorCode::Ok };
 }
 
 bool FtUtils::isNumber(const std::string& word) {
-    return std::all_of(word.begin(), word.end(), ::isdigit);
+    return std::all_of(word.begin(), word.end(), [](char ch) { return std::isdigit(static_cast<unsigned char>(ch)); });
 }
 
 std::string FtUtils::getError(FtError error) {
