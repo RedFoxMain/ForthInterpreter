@@ -32,7 +32,7 @@ FtError FtInterpreter::forth_over() {
 FtError FtInterpreter::forth_if(std::istringstream& stream) {
     if (!compile_ctx_.is_compiling)
         return FtError{ FtErrorCode::NotInCompilingMode };
-    auto& body = getLastDefinedWord()->data;
+    auto& body = compile_ctx_.current_word->data;
     compile_ctx_.ctrl_flow.emplace_back(FtCtrlFlow::Kind::If, body.size());
     dictionary_.compileCall(compile_ctx_, [this](std::size_t&) -> FtError {
         return FtError{ FtErrorCode::NotImplemented };
@@ -45,7 +45,7 @@ FtError FtInterpreter::forth_else(std::istringstream& stream) {
         return FtError{ FtErrorCode::NotInCompilingMode };
     if (compile_ctx_.ctrl_flow.empty() || compile_ctx_.ctrl_flow.back().kind != FtCtrlFlow::Kind::If)
         return FtError{ FtErrorCode::UnterminatedIf };
-    auto& body = getLastDefinedWord()->data;
+    auto& body = compile_ctx_.current_word->data;
     std::size_t if_position = compile_ctx_.ctrl_flow.back().position; compile_ctx_.ctrl_flow.pop_back();
     std::size_t after_else_position = body.size() + 1;
     body[if_position] = [this, after_else_position](std::size_t& next) -> FtError {
@@ -65,7 +65,7 @@ FtError FtInterpreter::forth_then(std::istringstream& stream) {
         return FtError{ FtErrorCode::NotInCompilingMode };
     if (compile_ctx_.ctrl_flow.empty()) 
         return FtError{ FtErrorCode::UnexpectedThen };
-    auto& body = getLastDefinedWord()->data;
+    auto& body = compile_ctx_.current_word->data;
     std::size_t target = body.size();
     FtCtrlFlow cf = compile_ctx_.ctrl_flow.back(); compile_ctx_.ctrl_flow.pop_back();
     if (cf.kind == FtCtrlFlow::Kind::If) {
@@ -87,7 +87,7 @@ FtError FtInterpreter::forth_then(std::istringstream& stream) {
 FtError FtInterpreter::forth_do(std::istringstream& stream) {
     if (!compile_ctx_.is_compiling)
         return FtError{ FtErrorCode::NotInCompilingMode };
-    auto& body = getLastDefinedWord()->data;
+    auto& body = compile_ctx_.current_word->data;
     dictionary_.compileCall(compile_ctx_, [this](std::size_t&) -> FtError {
         cell index = 0, limit = 0; RETURN_IF_ERROR(runtime_ctx_.stack.pop2v(limit, index));
         runtime_ctx_.loop_frames.emplace_back(index, limit);
@@ -102,7 +102,7 @@ FtError FtInterpreter::forth_loop(std::istringstream& stream) {
         return FtError{ FtErrorCode::NotInCompilingMode };
     if (compile_ctx_.ctrl_flow.empty() || compile_ctx_.ctrl_flow.back().kind != FtCtrlFlow::Kind::Do)
         return FtError{ FtErrorCode::UnexpectedLoop };
-    auto& body = getLastDefinedWord()->data;
+    auto& body = compile_ctx_.current_word->data;
     FtCtrlFlow cf = std::move(compile_ctx_.ctrl_flow.back()); compile_ctx_.ctrl_flow.pop_back();
     std::size_t loop_position = body.size();
     std::size_t after_loop_position = loop_position + 1;
@@ -126,7 +126,7 @@ FtError FtInterpreter::forth_loop(std::istringstream& stream) {
 FtError FtInterpreter::forth_begin(std::istringstream& stream) {
     if (!compile_ctx_.is_compiling)
         return FtError{ FtErrorCode::NotInCompilingMode };
-    compile_ctx_.ctrl_flow.emplace_back(FtCtrlFlow::Kind::Begin, getLastDefinedWord()->data.size());
+    compile_ctx_.ctrl_flow.emplace_back(FtCtrlFlow::Kind::Begin, compile_ctx_.current_word->data.size());
     return FtError{ FtErrorCode::Ok };
 }
 
@@ -135,7 +135,7 @@ FtError FtInterpreter::forth_until(std::istringstream& stream) {
         return FtError{ FtErrorCode::NotInCompilingMode };
     if (compile_ctx_.ctrl_flow.empty() || compile_ctx_.ctrl_flow.back().kind != FtCtrlFlow::Kind::Begin)
         return FtError{ FtErrorCode::UnexpectedUntil };
-    auto& body = getLastDefinedWord()->data;
+    auto& body = compile_ctx_.current_word->data;
     FtCtrlFlow cf = std::move(compile_ctx_.ctrl_flow.back()); compile_ctx_.ctrl_flow.pop_back();
     std::size_t target = cf.position;
     dictionary_.compileCall(compile_ctx_, [this, target](std::size_t& next) -> FtError {
@@ -151,7 +151,7 @@ FtError FtInterpreter::forth_while(std::istringstream& stream) {
         return FtError{ FtErrorCode::NotInCompilingMode };
     if (compile_ctx_.ctrl_flow.empty() || compile_ctx_.ctrl_flow.back().kind != FtCtrlFlow::Kind::Begin)
         return FtError{ FtErrorCode::UnexpectedWhile };
-    auto& body = getLastDefinedWord()->data;
+    auto& body = compile_ctx_.current_word->data;
     std::size_t patch_position = body.size();
     dictionary_.compileCall(compile_ctx_, [](std::size_t&) -> FtError {
         return FtError{ FtErrorCode::NotImplemented };
@@ -165,7 +165,7 @@ FtError FtInterpreter::forth_repeat(std::istringstream& stream) {
         return FtError{ FtErrorCode::NotInCompilingMode };
     if (compile_ctx_.ctrl_flow.empty() || compile_ctx_.ctrl_flow.back().kind != FtCtrlFlow::Kind::While)
         return FtError{ FtErrorCode::UnexpectedRepeat };
-    auto& body = getLastDefinedWord()->data;
+    auto& body = compile_ctx_.current_word->data;
     FtCtrlFlow while_cf = std::move(compile_ctx_.ctrl_flow.back()); compile_ctx_.ctrl_flow.pop_back();
     FtCtrlFlow begin_cf = std::move(compile_ctx_.ctrl_flow.back()); compile_ctx_.ctrl_flow.pop_back();
     std::size_t after_repeat_position = body.size() + 1;
@@ -186,7 +186,7 @@ FtError FtInterpreter::forth_repeat(std::istringstream& stream) {
 FtError FtInterpreter::forth_leave() {
     if (!compile_ctx_.is_compiling)
         return FtError{ FtErrorCode::NotInCompilingMode };
-    auto& body = getLastDefinedWord()->data;
+    auto& body = compile_ctx_.current_word->data;
     for (auto it = compile_ctx_.ctrl_flow.rbegin(); it != compile_ctx_.ctrl_flow.rend(); ++it) {
         if (it->kind == FtCtrlFlow::Kind::Do) {
             it->leave_positions.push_back(body.size());
@@ -345,19 +345,14 @@ FtError FtInterpreter::beginDefinition(std::istringstream& stream) {
     if (!(stream >> buffer))
         return FtError{ FtErrorCode::WordNameNotSet };
     int word_index = dictionary_.findWord(buffer);
-    FtWord* word = nullptr;
-    if (word_index != -1) {
-        word = dictionary_.getWordAt(word_index);
-        if (word->is_builtin)
-            return FtError{ FtErrorCode::CannotRedefineBuiltinWord, word->name };
-        word->is_hidden = true;
-        setLastDefinitionIndex(word_index);
-    } else {
-        createEmptyWord();
-        word = getLastDefinedWord();
-        word->name = std::move(buffer);
+    if (word_index != -1 ) {
+        if (auto ptr = dictionary_.getWordAt(word_index).lock()) {
+            if (ptr->is_builtin)
+                return FtError{ FtErrorCode::CannotRedefineBuiltinWord, ptr->name };
+        }
     }
-    word->data.clear();
+    compile_ctx_.current_word = std::make_shared<FtWord>();
+    compile_ctx_.current_word->name = std::move(buffer);
     compile_ctx_.is_compiling = true;
     return FtError{ FtErrorCode::Ok };
 }
@@ -369,18 +364,24 @@ FtError FtInterpreter::endDefinition() {
         return FtError{ FtErrorCode::UnterminatedIf };
     if (!runtime_ctx_.loop_frames.empty())
         return FtError{ FtErrorCode::UnterminatedLoop };
-    FtWord* new_word = getLastDefinedWord();
-    auto body = std::move(new_word->data);
-    new_word->code = [this, body = std::move(body)]() -> FtError {
+    auto& body = std::move(compile_ctx_.current_word->data);
+    compile_ctx_.current_word->code = [this, body = std::move(body)]() -> FtError {
         std::size_t ip = 0;
+        FtError err = FtError{ FtErrorCode::Ok };
+        std::size_t saved_depth = runtime_ctx_.loop_frames.size();
         while (ip < body.size()) {
             std::size_t next = ip + 1;
-            RETURN_IF_ERROR(body[ip](next));
+            err = body[ip](next);
+            if (err.error_code != FtErrorCode::Ok) 
+                break;
             ip = next;
         }
-        return FtError{ FtErrorCode::Ok };
+        while (runtime_ctx_.loop_frames.size() > saved_depth)
+            runtime_ctx_.loop_frames.pop_back();
+        return err;
     };
-    new_word->is_hidden = false;
+    compile_ctx_.current_word->is_hidden = false;
+    dictionary_.addWord(std::move(compile_ctx_.current_word));
     compile_ctx_.is_compiling = false;
     return FtError{ FtErrorCode::Ok }; 
 }
