@@ -60,8 +60,14 @@ void FtInterpreter::initDictionary() {
     // Built-in variables
     dictionary_.addWord("I", [this]() -> FtError { 
         if (runtime_ctx_.loop_frames.empty()) 
-            return FtError{ FtErrorCode::EmptyStack };
+            return FtError{ FtErrorCode::NotInLoop };
         return runtime_ctx_.stack.pushv(runtime_ctx_.loop_frames.back().index);
+    }, false, true);
+
+    dictionary_.addWord("J", [this]() -> FtError { 
+        if (runtime_ctx_.loop_frames.size() < 2) 
+            return FtError{ FtErrorCode::NotInLoop };
+        return runtime_ctx_.stack.pushv(runtime_ctx_.loop_frames[runtime_ctx_.loop_frames.size() - 2].index);
     }, false, true);
 
     // Stack methods
