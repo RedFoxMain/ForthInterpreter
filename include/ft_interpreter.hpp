@@ -8,15 +8,14 @@
 
 class FtInterpreter {
 public:
-    FtInterpreter() = default;
+    FtInterpreter();
     ~FtInterpreter() = default;
     void run();
+    FtError evaluate(const std::string& code);
 
 private:
     void initDictionary();
     void abortCompile();
-    FtError evaluate(const std::string& code);
-    
     FtError forth_drop();
     FtError forth_dup();
     FtError forth_swap();

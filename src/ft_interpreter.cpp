@@ -2,8 +2,11 @@
 #include "../include/ft_interpreter.hpp"
 #include "../include/ft_utils.hpp"
 
-void FtInterpreter::run() {
+FtInterpreter::FtInterpreter() {
     initDictionary();
+}
+
+void FtInterpreter::run() {
     std::string buffer{};
     std::cout << ">> ";
     while (std::getline(std::cin, buffer) && buffer != "bye") {
