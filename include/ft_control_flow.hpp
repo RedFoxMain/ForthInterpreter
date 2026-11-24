@@ -4,9 +4,8 @@
 #include <string>
 #include <vector>
 #include <cstddef>
-#include <unordered_map>
-#include <functional>
 #include <sstream>
+#include <functional>
 #include "ft_error_codes.hpp"
 
 using Func = std::function<FtError()>;
@@ -15,7 +14,6 @@ using ImmediateFunc = std::function<FtError(std::istringstream&)>;
 
 struct FtLoopFrame {
     std::size_t index, limit;
-    std::unordered_map<std::string, FuncWithIp> local_variables;
     explicit FtLoopFrame(std::size_t index, std::size_t limit)
         : index(index), limit(limit) {}
 };
