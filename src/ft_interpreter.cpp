@@ -29,14 +29,15 @@ FtError FtInterpreter::evaluate(const std::string& code) {
     while (stream >> buffer) {
         const int word_index = dictionary_.findWord(buffer);
         if (word_index != -1) {
-            FtWord* word = dictionary_.getWordAt(word_index);
-            if (compile_ctx_.is_compiling && !word->is_immediate)
-                dictionary_.compileCall(compile_ctx_, word);
-            else if (word->is_immediate)
-                RETURN_IF_ERROR((word->immediate != nullptr) ? word->immediate(stream) : word->code());
-            else
-                RETURN_IF_ERROR(word->code());
-            continue;
+            if(auto word = dictionary_.getWordAt(word_index).lock()) {
+                if (compile_ctx_.is_compiling && !word->is_immediate)
+                    dictionary_.compileCall(compile_ctx_, word);
+                else if (word->is_immediate)
+                    RETURN_IF_ERROR((word->immediate != nullptr) ? word->immediate(stream) : word->code());
+                else
+                    RETURN_IF_ERROR(word->code());
+                continue;
+            }
         }
         if (FtUtils::isNumber(buffer)) {
             cell value = 0;
@@ -113,23 +114,8 @@ void FtInterpreter::initDictionary() {
     dictionary_.addWord(";", [this]() -> FtError { return endDefinition(); }, true );
 }
 
-void FtInterpreter::createEmptyWord() {
-    compile_ctx_.last_definition_at = dictionary_.size();
-    dictionary_.createEmptyWord();
-}
-
 void FtInterpreter::abortCompile() {
-    if (compile_ctx_.last_definition_at == -1) return;
-    if (compile_ctx_.last_definition_at == dictionary_.size() - 1) dictionary_.pop();
-    else dictionary_.erase(compile_ctx_.last_definition_at);
+    dictionary_.erase(compile_ctx_.current_word);
     runtime_ctx_.reset();
     compile_ctx_.reset();
 }
-
-void FtInterpreter::setLastDefinitionIndex(int index) {
-    if (index < 0 || index > dictionary_.size())
-        return;
-    compile_ctx_.last_definition_at = index;
-}
-
-FtWord* FtInterpreter::getLastDefinedWord() { return dictionary_.getWordAt(compile_ctx_.last_definition_at); }

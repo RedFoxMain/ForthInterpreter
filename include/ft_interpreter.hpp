@@ -2,6 +2,7 @@
 #define _FORTH_INTERPRETER_HPP_
 
 #include "ft_word.hpp"
+#include "ft_word_dictionary.hpp"
 #include "ft_compile_context.hpp"
 #include "ft_runtime_context.hpp"
 
@@ -13,11 +14,8 @@ public:
 
 private:
     void initDictionary();
-    void createEmptyWord();
     void abortCompile();
-    void setLastDefinitionIndex(int index);
     FtError evaluate(const std::string& code);
-    FtWord* getLastDefinedWord();
     
     FtError forth_drop();
     FtError forth_dup();
