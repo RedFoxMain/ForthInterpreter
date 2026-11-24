@@ -33,6 +33,23 @@ cmake --build build --config Debug
 
 You can also open the repository in an IDE that supports CMake and build the `ForthInterpreter` target.
 
+### Tests
+
+Tests are controlled by CMake's `BUILD_TESTING` option. It defaults to `ON`, which adds the `ForthInterpreterTests` target and registers it with CTest.
+
+```powershell
+cmake --preset DebugX64 -DBUILD_TESTING=ON
+cmake --build out/build/DebugX64 --target ForthInterpreterTests
+ctest --test-dir out/build/DebugX64 --output-on-failure
+```
+
+To disable test compilation and registration, reconfigure with `BUILD_TESTING=OFF`:
+
+```powershell
+cmake --preset DebugX64 -DBUILD_TESTING=OFF
+cmake --build out/build/DebugX64
+```
+
 ## Run
 
 ```powershell
